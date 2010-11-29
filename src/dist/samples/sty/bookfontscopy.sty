@@ -1,0 +1,95 @@
+%%%%%%%% file bringhurst.sty %%%%%%%%%%%%%
+%commands
+\usepackage{bookfonts,titling,xltxtra,fontspec,xunicode,url,fixltx2e,color,xcolor,makeidx,calc,graphicx,soul}
+\definecolor{nicered}{rgb}{.647,.129,.149}
+
+\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text,Colour=333333}
+\setmainfont[Ligatures=Common,SmallCapsFont={Adobe Garamond Pro},SmallCapsFeatures={Color=b30000},BoldFont={Adobe Garamond Pro Bold},BoldItalicFont={Cochin LT Pro Bold Italic},BoldItalicFeatures={Scale=1.1},ItalicFont={Cochin LT Pro Italic},ItalicFeatures={Scale=1.1}]{Adobe Garamond Pro}
+\setsansfont[]{Cantoria MT Std Light}
+\setmonofont[]{Prestige Elite Std}
+\newfontfamily\oldstyledigits[Numbers=OldStyle]{Adobe Garamond Pro}
+\newfontfamily\liningdigits[Numbers=SlashedZero]{Adobe Garamond Pro}
+\newfontfamily\red[Colour=b30000]{Adobe Garamond Pro}
+\newfontfamily\chapterheadingfont[Scale=0.8,Alternate=1,Kerning=Uppercase,Letters=UppercaseSmallCaps]{Adobe Garamond Pro}
+\newfontfamily\sectionheadingfont[Scale=0.9]{Cochin LT Pro Italic}
+\newfontfamily\smallcapsfont[Letters=SmallCaps,Kerning=Uppercase]{Adobe Garamond Pro}
+
+\newfontfamily\poetica{Poetica Std}
+\newfontfamily\nueva{Nueva Std Light}
+\newfontfamily\ornament[Scale=0.7,Colour=8f0000]{Zapfino}
+
+
+\flushbottom \raggedbottom
+\frenchspacing
+\headstyles{bringhurst}
+
+\makeindex
+
+\makeatletter
+\newlength\dlf@normtxtw
+\setlength\dlf@normtxtw{\textwidth}
+\def\myhelvetfont{\def\sfdefault{mdput}}
+\newsavebox{\feline@chapter}
+\newcommand\feline@chapter@marker[1][4cm]{%
+    \sbox\feline@chapter{%
+        \resizebox{!}{#1}{\fboxsep=1pt%
+            \colorbox{nicered}{\color{white}\bfseries\sffamily\thechapter}%
+        }}%
+        \rotatebox{90}{%
+            \resizebox{%
+                \heightof{\usebox{\feline@chapter}}+\depthof{\usebox{\feline@chapter}}}%
+            {!}{\scshape\so\@chapapp}}\quad%
+            \raisebox{\depthof{\usebox{\feline@chapter}}}{\usebox{\feline@chapter}}%
+}
+\newcommand\feline@chm[1][4cm]{%
+    \sbox\feline@chapter{\feline@chapter@marker[#1]}%
+    \makebox[0pt][l]{% aka \rlap
+    \makebox[1cm][r]{\usebox\feline@chapter}%
+}}
+
+
+\makepagestyle{mypages}
+\makeevenfoot{mypages}{}{\red\thepage}{}
+\makeoddfoot{mypages}{}{\red\thepage}{}
+\makeheadrule{mypages}{\textwidth}{\normalrulethickness}
+\newcommand{\@mypagesmarks}{%
+  \def\chaptermark##1{\markboth{##1}}
+  \def\sectionmark##1{\markboth{##1}}
+}
+\makechapterstyle{mypages}{%
+    \renewcommand{\chapterheadstart}{}
+    \renewcommand*{\chapnumfont}{\chaptitlefont}
+    \settowidth{\chapindent}{\chapnumfont 99}
+    \renewcommand*{\printchaptername}{}
+    \renewcommand*{\chapternamenum}{}
+    \renewcommand*{\printchapternum}{%
+        \noindent\llap{\makebox[\chapindent][l]{%
+        \chapnumfont \thechapter}}}
+    \renewcommand*{\afterchapternum}{}
+    \renewcommand{\printchaptertitle}[1]{%
+        \raggedright\Large\scshape{##1}}
+    \renewcommand{\afterchaptertitle}{%
+        \vskip\onelineskip \hrule\vskip\onelineskip}
+    \renewcommand*{\chapnumfont} {\chaptitlefont}
+    \renewcommand*{\chapnumfont}{\chaptitlefont} % allow for 99 chapters!
+    \settowidth{\chapindent}{\chapnumfont 999}
+    \renewcommand*{\printchaptername}{}
+    \renewcommand*{\chapternamenum}{}
+    \renewcommand*{\chapnumfont}{\chaptitlefont}
+    \renewcommand*{\printchapternum}{%
+    \noindent\llap{\makebox[\chapindent][l]{%
+        \chapnumfont \thechapter}}}
+    \renewcommand*{\afterchapternum}{}
+}
+
+
+\renewcommand*{\@mypagesmarks}{%
+  \createmark{chapter}{left}{nonumber}{}{ \space}
+  \createmark{section}{right}{nonumber}{}{ \space}}
+\makepsmarks{mypages}{\@mypagesmarks}
+\makeevenhead{mypages}{}{\chapterheadingfont\leftmark}{}
+\makeoddhead{mypages}{}{\sectionheadingfont\rightmark}{}
+\makeatother
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

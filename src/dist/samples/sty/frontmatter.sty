@@ -1,0 +1,21 @@
+%%%%%%%% file bringhurst.sty %%%%%%%%%%%%%
+%commands
+
+%% Only chapter titles are included in the ToC. To specify this we use the
+%% \settocdepth command.
+\settocdepth{subsection}%
+
+%% The ToC is typeset raggedright with no leaders and the page numbers
+%% coming immediately after the chapter title. This is specified via:
+\renewcommand{\cftchapterfont}{\normalfont}%
+\renewcommand{\cftchapterpagefont}{\normalfont}%
+\renewcommand{\cftchapterpresnum}{\bfseries}%
+\renewcommand{\cftchapterleader}{}%
+\renewcommand{\cftchapterafterpnum}{\cftparfillskip}%
+
+\setsecnumdepth{subsubsection}
+\maxsecnumdepth{subsubsection}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

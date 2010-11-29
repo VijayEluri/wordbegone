@@ -1,0 +1,27 @@
+%%%%%%%% file page.sty %%%%%%%%%%%%%
+%commands
+
+\copypagestyle{leanne}{Ruled}%
+
+\makepsmarks{leanne}{
+  \nouppercaseheads
+  \createmark{chapter}{left}{nonumber}{}{}
+  \createmark{section}{right}{shownumber}{\red\upshape}{. \space\itshape}
+  \createmark{subsection}{right}{shownumber}{\red\upshape}{. \space\itshape}
+  \createplainmark{toc}{both}{\contentsname}
+  \createplainmark{lof}{both}{\listfigurename}
+  \createplainmark{lot}{both}{\listtablename}
+  \createplainmark{bib}{both}{\bibname}
+  \createplainmark{index}{both}{\indexname}
+  \createplainmark{glossary}{both}{\glossaryname}
+}
+
+\makeheadrule{leanne}{0pt}{\normalrulethickness}
+\makeevenfoot{leanne}{\red\thepage}{}{}%
+\makeoddfoot{leanne}{}{}{\red\thepage}%
+\makeevenhead{leanne}{\chapterheadingfont\leftmark}{}{}
+\makeoddhead{leanne}{}{}{\itshape\sectionheadingfont\rightmark}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

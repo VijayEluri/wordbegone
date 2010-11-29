@@ -1,0 +1,105 @@
+%%%%%%%% file myheadings.sty %%%%%%%%%%%%%
+%commands
+
+\setsecnumformat{
+}
+
+%% Section title style
+\setbeforesecskip{-1.25\onelineskip
+                    \@plus -0.5\onelineskip \@minus -.5\onelineskip}%
+\setaftersecskip{0.75\onelineskip \@plus 0.1\onelineskip}%
+
+\setsecindent{0pt}
+\newlength{\totalheadingwidth}
+\newlength{\ornamentswidth}
+\newlength{\ornamentwidth}
+\newlength{\headingwidth}
+\newlength{\adjustedLineWidth}
+\newlength{\thisheadingwidth}
+\newlength{\headingfill}
+\newlength{\minheadwidth}
+\newlength{\maxheadwidth}
+\newlength{\headtextwidth}
+\newlength{\somelength}
+\newcommand{\sectionHeadingStyle}[1]{%
+
+\setlength{\ornamentwidth}{\widthof{\ornament{\XeTeXglyph1349}}}
+\setlength{\ornamentswidth}{\ornamentwidth*2}
+\setlength{\adjustedLineWidth}{\linewidth-\ornamentswidth}
+\setlength{\minheadwidth}{.75\adjustedLineWidth}
+\setlength{\somelength}{.9\adjustedLineWidth}
+\setlength{\headingwidth}{\widthof{#1}}%
+\setlength{\headtextwidth}{\minof{\minheadwidth}{\headingwidth}}
+\setlength{\maxheadwidth}{\maxof{\minheadwidth}{\headingwidth}}
+\setlength{\thisheadingwidth}{\minof{\maxheadwidth}{\somelength}}%
+\setlength{\headingfill}{(\adjustedLineWidth-(\headtextwidth+\ornamentswidth))/2}
+\ifthenelse{\headingwidth>\somelength}{
+\begin{center}\parbox[c]{\headtextwidth+\ornamentswidth+3pt}{
+\parbox[c]{\ornamentwidth}{\raggedleft\ornament{\XeTeXglyph1349}}%
+\parbox[c]{\headtextwidth}{\sectionfont\large\begin{center}{#1}\end{center}}%
+\parbox[c]{\ornamentwidth+3pt}{\hspace{3pt}\raggedright\ornament{\XeTeXglyph1350}}%
+}
+\end{center}
+}
+{
+\ifthenelse{\headingwidth<\minheadwidth}
+{
+\begin{center}\parbox[c]{\headingwidth+\ornamentswidth}{
+\parbox[c]{\ornamentwidth}{\raggedleft\ornament{\XeTeXglyph1349}}%
+\parbox[c]{\headingwidth}{\sectionfont\large\centering{#1}}%
+\parbox[c]{\ornamentwidth}{\raggedright\ornament{\XeTeXglyph1350}}%
+}
+\end{center}
+}
+{
+\begin{center}\parbox[c]{\headtextwidth+\ornamentswidth}{
+\parbox[c]{\ornamentwidth}{\raggedleft\ornament{\XeTeXglyph1349}}%
+\parbox[c]{\headtextwidth}{\sectionfont\large\centering{#1}}%
+\parbox[c]{\ornamentwidth}{\raggedright\ornament{\XeTeXglyph1350}}%
+}
+\end{center}
+}
+}
+}
+
+\setsecheadstyle{
+\sectionHeadingStyle
+}
+
+%% Subsection title style
+\setbeforesubsecskip{-2.25\onelineskip}%
+\setaftersubsecskip{0.01pt}%
+
+\newcommand{\subsectionHeadingStyle}[1]{
+\begin{center}
+\small{\subheadingfont #1}
+\end{center}
+}
+\setsubsecheadstyle{\subsectionHeadingStyle}
+
+%% SubSubsection title style
+%%\setbeforesubsubsecskip{1.667\onelineskip}
+\setaftersubsubsecskip{0.01pt}
+
+\newcommand{\subsubsectionHeadingStyle}[1]{
+\begin{center}
+\normalsize{\subsubheadingfont #1}
+\end{center}
+}
+\setsubsubsecheadstyle{\subsubsectionHeadingStyle}
+
+%% paragraph
+%%\setbeforeparaskip{-.667\onelineskip
+%%                 \@plus -02.5\onelineskip \@minus -0.25\onelineskip}%
+%%\setafterparaskip{.333\onelineskip \@plus 0.1\onelineskip}%
+%%\setparaheadstyle{\normalfont\normalsize\centering\itshape}%
+
+% subparagraph
+%%\setsubparaindent{\parindent}%
+%%\setbeforesubparaskip{1.0\onelineskip
+%%                    \@plus 0.5\onelineskip \@minus 0.2\onelineskip}%
+%%\setaftersubparaskip{-1em}%
+%%\setsubparaheadstyle{\normalfont\normalsize\scshape\MakeLowercase}
+
+\endinput
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

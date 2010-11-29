@@ -1,0 +1,60 @@
+%%%%%%%% file bringhurst.sty %%%%%%%%%%%%%
+%commands
+\usepackage[super,ibidem]{jurabib}
+\usepackage{bookfonts,xltxtra,xunicode,url,lettrine,graphicx,wrapfig,tabulary,ifthen,frontmatter,myheadings,format,page,hyperref}
+\DisemulatePackage{setspace}
+\usepackage{setspace}
+\usepackage[figuresright]{rotating}
+\usepackage{memhfixc}
+
+%%https://support.lulu.com/View.jsp?procId=c35b57a2cbd8bd905ae00133fb8858b7&locale=en_US
+%%Comic Book - 6.625 x 10.25" or 16.82 x 26 cm 6.87 x 10.50" or 17.46 x 26.67 cm
+%%Royal - 6.13 x 9.21" or 15.59 x 23.38 cm 6.38 x 9.45" or 16.22 x 24.02 cm
+%%Crown Quatro 7.44 x 9.68" or 18.90 x 24.58 cm 7.69 x 9.93" or 19.54 x 25.22 cm
+
+%% LULU \setstocksize{9.93in}{7.69in}
+\setstocksize{9.21in}{6.13in}
+\settrimmedsize{9.21in}{6.13in}{*}
+%%\settrims{3.6mm}{3.6mm}
+\settrims{0pt}{0pt}
+\setstretch{1.2}
+\raggedbottom
+\medievalpage[11]
+
+%% Lastly define the dimensions for any marginal notes.
+\setmarginnotes{9pt}{54.64mm}{\onelineskip}%
+\checkandfixthelayout[nearest]%
+\strictpagecheck
+\fixpdflayout
+
+\hypersetup{
+      pdftex,
+      bookmarks=true,         % show bookmarks bar?
+      bookmarksnumbered=true,
+      unicode=true,          % non-Latin characters in Acrobat’s bookmarks%
+      pdftoolbar=true,        % show Acrobat’s toolbar?
+      pdfmenubar=true,        % show Acrobat’s menu?
+      pdffitwindow=false,     % window fit to page when opened
+      pdfstartview={FitH},    % fits the width of the page to the window
+      pdftitle={The Dharma Study Course Year One},    % title
+      pdfauthor={Ken Holmes},     % author
+      pdfsubject={Buddhism},   % subject of the document
+      pdfcreator={Ken Holmes},   % creator of the document
+      pdfproducer={Leanne Northrop}, % producer of the document
+      pdfkeywords={Buddhism}, % list of keywords
+      pdfnewwindow=true,      % links in new window
+      colorlinks=true,        % false: boxed links; true: colored links
+      linkcolor=red,          % color of internal links
+      citecolor=green,        % color of links to bibliography
+      filecolor=magenta,      % color of file links
+      urlcolor=cyan,           % color of external links
+      hyperindex=true,
+      pdfpagemode=UseOutlines,
+      pdfdisplaydoctitle=true,
+      pdfpagelayout=TwoColumnLeft,
+      backref=true
+}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

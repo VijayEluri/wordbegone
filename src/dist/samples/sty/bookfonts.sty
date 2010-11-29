@@ -1,0 +1,82 @@
+%%%%%%%% file bringhurst.sty %%%%%%%%%%%%%
+%commands
+\usepackage{fontspec,color,xcolor}
+\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text,Colour=333333}
+\setmainfont[LetterSpace=2.0,Ligatures={Common},SmallCapsFeatures={LetterSpace=0.0}, Numbers={OldStyle},BoldFont={GaramondMTPro-Bold},BoldItalicFont={GaramondMTPro-BoldItalic},ItalicFont={GaramondMTPro-Italic}]{GaramondMTPro-Regular}
+\setsansfont[]{Myriad Pro Light}
+\setmonofont[]{Prestige Elite Std}
+\newfontfamily\liningdigits[Numbers=Lining]{GaramondMTPro-Regular}
+
+\newfontfamily\red[Colour=b30000,LetterSpace=2.0,Ligatures={Common},SmallCapsFeatures={LetterSpace=0.0}, Numbers={OldStyle},BoldFont={GaramondMTPro-Bold},BoldItalicFont={GaramondMTPro-BoldItalic},ItalicFont={GaramondMTPro-Italic}]{GaramondMTPro-Regular}
+
+\newfontfamily\blue[Colour=0000b3,LetterSpace=2.0,Ligatures={Common},SmallCapsFeatures={LetterSpace=0.0}, Numbers={OldStyle},BoldFont={GaramondMTPro-Bold},BoldItalicFont={GaramondMTPro-BoldItalic},ItalicFont={GaramondMTPro-Italic}]{GaramondMTPro-Regular}
+
+\newfontfamily\essentialHighlightFont[Colour=383361,LetterSpace=2.0,Ligatures={Common},SmallCapsFeatures={LetterSpace=0.0},Numbers={OldStyle},BoldFont={GaramondMTPro-Bold},BoldItalicFont={GaramondMTPro-BoldItalic},ItalicFont={GaramondMTPro-Italic}]{GaramondMTPro-Regular}
+\newfontfamily\contraversialHighlightFont[Colour=383361,LetterSpace=2.0,Ligatures={Common},SmallCapsFeatures={LetterSpace=0.0},Numbers={OldStyle},BoldFont={GaramondMTPro-Bold},BoldItalicFont={GaramondMTPro-BoldItalic},ItalicFont={GaramondMTPro-Italic}]{GaramondMTPro-Regular}
+\newfontfamily\exerciseHighlightFont[Colour=383361,LetterSpace=2.0,Ligatures={Common},SmallCapsFeatures={LetterSpace=0.0},Numbers={OldStyle},BoldFont={GaramondMTPro-Bold},BoldItalicFont={GaramondMTPro-BoldItalic},ItalicFont={GaramondMTPro-Italic}]{GaramondMTPro-Regular}
+
+
+\newfontfamily\sectionnumbersfont[Colour=b30000,Numbers=OldStyle]{GaramondMTPro-Regular}
+\newfontfamily\chapterheadingfont[Colour=b30000,Style=TitlingCaps,Ligatures={Common,Discretionary},Numbers={Lining,SlashedZero},Kerning=Uppercase,Letters=UppercaseSmallCaps]{AGaramondPro-Regular}
+\newfontfamily\sectionheadingfont[Colour=b30000,Ligatures={Common,Discretionary},Numbers=OldStyle]{GaramondMTPro-ItalicAlt}
+
+
+\newfontfamily\sectionfont[Ligatures={Common,Rare},Numbers=OldStyle]{AGaramondPro-Regular}
+\newfontfamily\subheadingfont[WordSpace={3,4,5},LetterSpace=23.0,Style=TitlingCaps,Ligatures={Common,Rare},Numbers={Lining,SlashedZero},Kerning=Uppercase,Letters=Uppercase]{AGaramondPro-Regular}
+\newfontfamily\subsubheadingfont[Style=Swash,Ligatures={Common,Discretionary},Numbers=OldStyle]{GaramondMTPro-ItalicAlt}
+
+\newfontfamily\poetica[Ligatures={Common},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaRed[Colour=b30000,Ligatures={Common},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaOne[SizeFeatures={
+                        {Size={-13}, Style=Swash, Variant=1},
+                        {Size={14-},Variant=8}},
+                       Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaTwo[SizeFeatures={
+                       {Size={-13}, Style=Swash, Variant=2},
+                       {Size={14-},Variant=8}},
+                      Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaThree[SizeFeatures={
+                     {Size={-13}, Style=Swash, Variant=3},
+                     {Size={14-},Variant=8}},
+                    Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaFour[SizeFeatures={
+                     {Size={-13}, Style=Swash, Variant=4},
+                     {Size={14-},Variant=8}},
+                    Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaFive[SizeFeatures={
+                     {Size={-13}, Style=Swash, Variant=5},
+                     {Size={14-},Variant=8}},
+                    Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaSix[SizeFeatures={
+                     {Size={-13}, Style=Swash, Variant=6},
+                     {Size={14-},Variant=8}},
+                    Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaSeven[SizeFeatures={
+                     {Size={-13}, Style=Swash, Variant=7},
+                     {Size={14-},Variant=8}},
+                    Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaEight[SizeFeatures={
+                     {Size={-13}, Style=Swash, Variant=8},
+                     {Size={14-},Variant=8}},
+                    Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaNine[SizeFeatures={
+                        {Size={-13}, Style=Swash, Variant=9},
+                        {Size={14-},Variant=8}},
+                       Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaTen[SizeFeatures={
+                       {Size={-13}, Style=Swash, Variant=10},
+                       {Size={14-},Variant=8}},
+                      Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaEleven[SizeFeatures={
+                     {Size={-13}, Style=Swash, Variant=11},
+                     {Size={14-},Variant=8}},
+                    Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+\newfontfamily\poeticaTitle[Style=Swash,Variant=10,Ligatures={Common,Discretionary}]{Poetica Std}
+\newfontfamily\verseswashfont[Style=Swash,Variant=10,Alternate=1,Ligatures={Common,Discretionary}]{Poetica Std}
+\newfontfamily\versesmallcapsfont[Letters=UppercaseSmallCaps,Ligatures={Common,Discretionary},WordSpace={1.6,1.7,1.8}]{Poetica Std}
+
+\newfontfamily\ornament[Scale=0.8,Colour=8f0000]{Zapfino}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
