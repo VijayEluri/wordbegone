@@ -95,7 +95,7 @@ new File("${dir}/html/").listFiles(
         }
     }
 
-    outFile = new File("${dir}/xsml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
+    outFile = new File("${dir}/xml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
     outFile.withWriter('utf8'){ w->
       w << result 
     }

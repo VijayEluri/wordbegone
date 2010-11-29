@@ -1,3 +1,6 @@
+import org.apache.tools.ant.filters.*
+import java.text.*
+
 usePlugin 'groovy'
 usePlugin(BasePlugin)
 
@@ -6,6 +9,8 @@ defaultTasks 'assemble'
 sourceCompatibility = 1.6
 version = '1.0-SNAPSHOT'
 appName = 'Publisher Pipeline'
+bDate = new Date()
+buildDate = bDate.format("yyyy-MM-dd HH:mm:ss")
 
 configurations {
     runtime
@@ -17,7 +22,7 @@ manifest.mainAttributes (
     "Main-Class":"org.northrop.leanne.publisher.Main",
     "Extension-Name": appName,
     "Implementation-Vendor-Id" : 'Leanne Northrop', 
-    "Built-Date": new Date().format("yyyy-MM-dd HH:mm:ss") 
+    "Built-Date": buildDate 
 )
 
 repositories {
@@ -51,9 +56,26 @@ task distLibs(dependsOn: 'jar', type: Copy) {
     from configurations.runtime
     from jar.archivePath
  }
+
+task distFiles(dependsOn: 'distLibs', type: Copy) {
+    from 'src/dist'
+    into file("$buildDir/distFiles")
+    include '**/*'
+    include '*'    
+    filter(ReplaceTokens, tokens: [author: 'Leanne Northrop', 
+                                   gradleVersion: gradle.gradleVersion,
+                                   version: version,                                   
+                                   appName: appName,
+                                   jarName: jar.archivePath.name,
+                                   buildDate: DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.MEDIUM).format(bDate)])
+    //filter(ConcatFilter, prepend: file('src/include/header.txt'))
+}
           
-task dist(dependsOn: 'distLibs', type: Zip) {
+task dist(dependsOn: 'distFiles', type: Zip) {
     archiveName = 'WordPublisher${version}.zip'
-    fileSet dir: 'src/dist'
+    fileSet dir: "$buildDir/distFiles"
     zipFileSet(dir: "$buildDir/distLibs", prefix: "libs")
 }
+
+
+

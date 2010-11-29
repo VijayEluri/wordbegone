@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PUBLISHER_APP_NAME="Word2Latex"
+PUBLISHER_APP_NAME="@appName@"
 
 # OS specific support (must be 'true' or 'false').
 cygwin=false
@@ -97,7 +97,7 @@ if [ -z "$JAVA_HOME" ] ; then
 fi
 
 STARTER_CLASSPATH=$PUBLISHER_HOME/libs
-STARTER_MAIN_CLASS="$STARTER_CLASSPATH/wordPublisher-1.0-SNAPSHOT.jar"
+STARTER_MAIN_CLASS="$STARTER_CLASSPATH/@jarName@"
 
 # For Darwin, add GROOVY_APP_NAME to the JAVA_OPTS as -Xdock:name
 if $darwin; then
