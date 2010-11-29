@@ -1,0 +1,194 @@
+%%%%%%%% file bringhurst.sty %%%%%%%%%%%%%
+%commands
+%%royal 6.13 x 9.21 in.
+\stocksmallroyalvo
+\settrimmedsize{9.21in}{6.13in}{*}% Sets up trimmed page size of 23 by 13.3cm
+\settypeblocksize{42\onelineskip}{21pc}{*}% Sets up 42 lines in typeblock
+\setlength{\trimtop}{0pt}% We'll do no trimming of the top of the stock
+
+%% The next set of calculations first sets the value of the
+%% \trimedge to be the \stockwidth; subtracting the trimmed\paperwidth
+%% then results in \trimedge being the amount to trim off the foredge.
+\setlength{\trimedge}{\stockwidth}%
+\addtolength{\trimedge}{-\paperwidth}%
+
+%% The sideways positioning is easy as we know the
+%% fore-edge margin to be 3.1cm.
+\setlrmargins{*}{3.1cm}{*}%
+
+%% The top margin is specified as 1.9cm, which is very close to four
+%% and a half lines of text. Just in case someone might want to use a
+%% different font size, I’ll specify the top margin so that it is dependent
+%% on the font size. The \footskip can be specified now as well (it doesn’t
+%% particularly matter what we do about the header-related lengths as there
+%% isn’t anything above the typeblock).
+
+\setulmargins{4.5\onelineskip}{*}{*}%
+\setheadfoot{\onelineskip}{3\onelineskip}%
+\setheaderspaces{\onelineskip}{*}{*}%
+
+%% Lastly define the dimensions for any marginal notes.
+
+\setmarginnotes{17pt}{51pt}{\onelineskip}%
+
+%% If this was for real, the page layout would have to be checked and implemented.
+
+\checkandfixthelayout[lines]%
+
+%% Bringhurst chapter style
+\makechapterstyle{bringhurst}{%
+\renewcommand{\chapterheadstart}{}%
+\renewcommand{\printchaptername}{}%
+\renewcommand{\chapternamenum}{}%
+\renewcommand{\printchapternum}{}%
+\renewcommand{\afterchapternum}{}%
+\renewcommand{\printchaptertitle}[1]{%
+\raggedright\Large\scshape\MakeLowercase{##1}}%
+\renewcommand{\afterchaptertitle}{%
+\vskip\onelineskip \hrule\vskip\onelineskip}%
+}%
+
+
+%% Section title style
+
+\setsecheadstyle{\raggedright\scshape\MakeLowercase}%
+\setbeforesecskip{-\onelineskip}%
+\setaftersecskip{\onelineskip}%
+
+
+%% Subsection title style
+
+\setsubsecheadstyle{\sethangfrom{\noindent ##1}\raggedright\itshape}%
+\setbeforesubsecskip{-\onelineskip}%
+\setaftersubsecskip{\onelineskip}%
+
+
+%% %% Bringhurst page style
+
+\makepagestyle{bringhurst}%
+\makeevenfoot{bringhurst}{\thepage}{}{}%
+\makeoddfoot{bringhurst}{}{}{\thepage}%
+
+%% The following makes titles align with any marginal notes,
+
+\newlength{\pwlayi}
+\setlength{\pwlayi}{\headsep}%
+\addtolength{\pwlayi}{\topskip}%
+\addtolength{\pwlayi}{7.3\onelineskip}%
+
+
+%% The following new macro \bringpicr{text} puts text into a minipage of width
+%% \marginparwidth, typeset raggedright in an italic font, and puts
+%% the top left of the Captions minipage at the position (\marginparsep, -\pwlayi)
+%% in a zero width picture.
+
+
+\newcommand{\bringpicr}[1]{%
+\setlength{\unitlength}{1pt}%
+\begin{picture}(0,0)%
+\put(\strip@pt\marginparsep, -\strip@pt\pwlayi){%
+\begin{minipage}[t]{\marginparwidth}%
+\raggedright\itshape #1%
+\end{minipage}}%
+\end{picture}%
+}%
+
+
+
+%%% However, we need a different picture for the left as the text needs
+%% to be typeset raggedleft with the right of the text 17pt from the left of
+%% the typeblock. I will use the length \pwlayii to calculate the sum of
+%% \marginparsep and \marginparwidth. Hence the following macros:
+%% The new macro \bringpicl{text} puts text into a minipage of width
+%% \marginparwidth, typeset raggedleft in an italic font, and puts the top left of
+%% the minipage at the position (-(\marginparsep + \marginparwidth), -\pwlayi)
+%% in a zero width picture.
+
+
+\newlength{\pwlayii}
+\setlength{\pwlayii}{\marginparsep}%
+\addtolength{\pwlayii}{\marginparwidth}%
+\newcommand{\bringpicl}[1]{%
+\setlength{\unitlength}{1pt}%
+\begin{picture}(0,0)%
+\put(-\strip@pt\pwlayii, -\strip@pt\pwlayi){%
+\begin{minipage}[t]{\marginparwidth}%
+\raggedleft\itshape #1%
+\end{minipage}}%
+\end{picture}%
+}%
+
+
+%% Now we can proceed with the remainder of the pagestyle specification.
+%% The next bit puts the chapter and section titles into the \...mark macros.
+
+\makepsmarks{bringhurst}{%
+\def\chaptermark##1{\markboth{##1}{##1}}%
+\def\sectionmark##1{\markright{##1}}%
+}%
+
+
+%% Finally, specify the evenhead using \bringpicl with the section title as its
+%% argument, and the oddhead using \bringpicr with the chapter title as its argument.
+
+\makeevenhead{bringhurst}{\bringpicl{\rightmark}}{}{}%
+\makeoddhead{bringhurst}{}{}{\bringpicr{\leftmark}}%
+
+
+%% The captions to figures and tables are set in a small sans font and are
+%% neither named nor numbered, and there is no LoF or LoT. Setting the caption
+%% titles in the desired font is simple:
+
+\captiontitlefont{\small\sffamily}%
+
+
+%% There are two options regarding table and figure captioning: either use the \legend
+%% command (which produces an anonymous unnumbered title) instead of the \caption
+%% command, or use the \caption command with a modified definition. Just in case the
+%% design might change at a later date to required numbered captions, it’s probably best to
+%% use a modified version of \caption. In this case this is simple, just give the \caption
+%% command the same definition as the \legend command.
+
+\let\caption\legend
+
+
+
+%% For fine typesetting you may wish to change the style of particular captions.
+%% The default style for a single line caption works well, but for a caption with
+%% two or three lines either the centering or centerlastline style might look better.
+%% A very long caption is again probably best done in a block paragraph style. Something like:
+%%
+%%
+%% \begin{figure}
+%% \captiontitlefont{\small\sffamily}
+%% \captionstyle{\centerlastline}
+%% ...
+%% \legend{...} \label{...}
+%% \end{figure}
+%%
+%%
+
+
+
+
+%% Only chapter titles are included in the ToC. To specify this we use the
+%% \settocdepth command.
+
+%\settocdepth{chapter}%
+
+
+%% The ToC is typeset raggedright with no leaders and the page numbers
+%% coming immediately after the chapter title. This is specified via:
+
+\renewcommand{\cftchapterfont}{\normalfont}%
+\renewcommand{\cftchapterpagefont}{\normalfont}%
+\renewcommand{\cftchapterpresnum}{\bfseries}%
+\renewcommand{\cftchapterleader}{}%
+\renewcommand{\cftchapterafterpnum}{\cftparfillskip}%
+
+%%
+
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

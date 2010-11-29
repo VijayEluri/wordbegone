@@ -1,0 +1,45 @@
+%%%%%%%% file format.sty %%%%%%%%%%%%%
+%commands
+
+%% The captions to figures and tables are set in a small sans font and are
+%% neither named nor numbered, and there is no LoF or LoT. Setting the caption
+%% titles in the desired font is simple:
+
+\captiontitlefont{\small\sffamily}%
+
+
+%% There are two options regarding table and figure captioning: either use the \legend
+%% command (which produces an anonymous unnumbered title) instead of the \caption
+%% command, or use the \caption command with a modified definition. Just in case the
+%% design might change at a later date to required numbered captions, it’s probably best to
+%% use a modified version of \caption. In this case this is simple, just give the \caption
+%% command the same definition as the \legend command.
+
+\let\caption\legend
+
+%% For fine typesetting you may wish to change the style of particular captions.
+%% The default style for a single line caption works well, but for a caption with
+%% two or three lines either the centering or centerlastline style might look better.
+%% A very long caption is again probably best done in a block paragraph style. Something like:
+%%
+%%
+%%\begin{figure}
+%% \captiontitlefont{\small\sffamily}
+%% \captionstyle{\centerlastline}
+%% ...
+%% \legend{...} \label{...}
+%% \end{figure}
+%%
+%%
+
+\newlength{\verseindent}
+\setlength{\verseindent}{\leftmargini}
+\newcommand{\attrib}[1]{%
+\nopagebreak{\raggedleft\footnotesize #1\par}
+}
+
+\newcommand*{\sclabel}[1]{\hspace\labelsep \normalfont\scshape #1}
+
+\endinput
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
