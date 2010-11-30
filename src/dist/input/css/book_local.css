@@ -1,0 +1,43 @@
+div.ahptl-picin, div.ahptl-picout { 
+  float: left;
+  margin-right: 1em;
+  margin-top: 0.7em;
+  margin-bottom: 0.7em;
+}
+
+div.ahptl-tip { 
+  border: 2px solid #aca;
+  padding-bottom: 0.7em;
+  padding-top: 0.2em;
+  padding-right: 1em;
+  padding-left: 1em;
+  margin-top: 0.7em;
+  margin-bottom: 0.7em;
+}
+
+div.ahptl-tip h4 { 
+  font-family: sans-serif;
+  position: relative;
+  left: -0.7em;
+  font-size: small;
+  margin-top: 0em;
+  color: #7a7;
+  margin-bottom: 0.1em;
+}
+
+div.ahptl-nextactions h3 { 
+  font-family: sans-serif;
+  color: white;
+  width: 100%;
+  background: #733;
+  text-align: center;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+table.ahptl-stop tr td { 
+  font-family: sans-serif;
+  color: #733;
+  font-size: large;
+  font-weight: bold;
+}

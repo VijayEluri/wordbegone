@@ -36,6 +36,7 @@ import groovy.util.slurpersupport.NodeChild
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
+import org.apache.tools.ant.*
 
 def dir = "${home}/input"
 
@@ -58,11 +59,17 @@ def parser() {
     parser
 }
 
+def ant = new AntBuilder()
+ant.mkdir(dir:"${home}/output")
+if (isdebug) {
+    ant.mkdir(dir:"${home}/output/debug")    
+}
+
 new File("${dir}/html/").listFiles(
     {d, file-> file ==~ /.*?\.htm/ } as FilenameFilter
   ).toList().each { inFile ->
+    ant.echo "Processing ${inFile.name}"
     // Get Word HTML (exported in utf8 with Display only ticked)
-
     def text=inFile.getText("utf8")
 
     // Get Index Words
@@ -82,13 +89,13 @@ new File("${dir}/html/").listFiles(
     // Process HTML into Textile Marked up Content
     def prettyHtml = new XmlParser().parseText(writer.toString())
     def outDir = "${home}/output"
-    def outFile = new File("${dir}/src/main/resources/newxml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
+    def outFile = new File("${dir}/newxml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
 
     def result = writer.toString()
     ['clean', 'textile','html2book'].each {
         result = transform("${dir}/xsl/${it}.xsl", result)
         if (isdebug && it != 'html2book') {
-            outFile = new File("${outDir}/${inFile.name.replaceAll('.htm(l)*','')}_${it}.html")
+            outFile = new File("${outDir}/debug/${inFile.name.replaceAll('.htm(l)*','')}_${it}.html")
             outFile.withWriter('utf8'){ w->
                 w << result
             }        

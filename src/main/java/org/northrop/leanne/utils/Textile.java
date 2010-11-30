@@ -56,7 +56,7 @@ public class Textile {
         parser.setBuilder(builder);
 
         parser.parse(str);
-        System.out.println("*" + sw.toString());
+
         return sw.toString();
     }
 
