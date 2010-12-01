@@ -118,6 +118,8 @@
     <xsl:template match="img" mode="copy">
             <xsl:element name="image">
                 <xsl:attribute name="width" select="@width"/>
+                <xsl:attribute name="src" select="replace(@src, '/', '.')"/>                
+                <xsl:attribute name="align" select="@align"/>                                
             </xsl:element>
     </xsl:template>
 

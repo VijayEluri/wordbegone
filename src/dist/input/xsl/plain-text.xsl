@@ -14,7 +14,9 @@
 <xsl:stylesheet version="2.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                xmlns:latex="http://www.leanne.northrop.org/xslt" exclude-result-prefixes="xs latex">
+                xmlns:latex="http://www.leanne.northrop.org/xslt"
+                xmlns:t="java:org.northrop.leanne.utils.Textile"
+                exclude-result-prefixes="xs latex">
 
     <xsl:output method="text"/>
 
@@ -70,27 +72,27 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
     </xsl:template>
 
     <xsl:template match="paragraph[position() eq 1 and parent::section[position() eq 1 and @index eq '1']]">
-<xsl:text>  </xsl:text><xsl:value-of select="."/>        
+<xsl:text>  </xsl:text><xsl:value-of select="t:toPlainText(.)"/>        
     </xsl:template>
 
     <xsl:template match="paragraph[position() eq 1 and parent::section[position() eq 1 and @index gt '1']]">
-<xsl:value-of select="."/>
+<xsl:value-of select="t:toPlainText(.)"/>
     </xsl:template>
 
     <xsl:template match="paragraph[position() eq 1 and parent::subsection[position() eq 1]]">
-<xsl:value-of select="."/>
+<xsl:value-of select="t:toPlainText(.)"/>
     </xsl:template>
 
     <xsl:template match="paragraph[position() eq 1 and parent::subsubsection[position() eq 1]]">
-<xsl:value-of select="."/>
+<xsl:value-of select="t:toPlainText(.)"/>
     </xsl:template>
 
     <xsl:template match="paragraph[position() gt 1 or (position() eq 1 and (parent::appendix or parent::chapter))]">
-<xsl:value-of select="."/>
+<xsl:value-of select="t:toPlainText(.)"/>
     </xsl:template>
 
     <xsl:template match="subparagraph">
-<xsl:value-of select="."/>
+<xsl:value-of select="t:toPlainText(.)"/>
     </xsl:template>
 
     <xsl:template match="image">
@@ -104,21 +106,21 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
     </xsl:template>
 
     <xsl:template match="td">
-        <xsl:variable name="v" select="."/>
+        <xsl:variable name="v" select="t:toPlainText(.)"/>
         <xsl:value-of select="$v"/>
     </xsl:template>
 
     <xsl:template match="th">
-        <xsl:variable name="v" select="."/>
+        <xsl:variable name="v" select="t:toPlainText(.)"/>
         <xsl:value-of select="$v"/>
     </xsl:template>
 
     <xsl:template match="paragraph" mode="index">
-<xsl:value-of select="."/>
+<xsl:value-of select="t:toPlainText(.)"/>
     </xsl:template>
 
     <xsl:template match="paragraph" mode="footnote">
-<xsl:value-of select="."/>
+<xsl:value-of select="t:toPlainText(.)"/>
     </xsl:template>
     
     <xsl:template match="list">
@@ -136,7 +138,7 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
     </xsl:template>
 
     <xsl:template match="item">
-<xsl:value-of select="."/>
+<xsl:value-of select="t:toPlainText(.)"/>
     </xsl:template>
 
     <xsl:template match="verse">
@@ -159,7 +161,7 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
     <xsl:value-of select="$initial"/><xsl:value-of select="$remaining"/>
                 </xsl:when>
                 <xsl:otherwise>
-    <xsl:value-of select="."/>
+    <xsl:value-of select="t:toPlainText(.)"/>
                 </xsl:otherwise>
             </xsl:choose>
 

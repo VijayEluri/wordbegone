@@ -23,9 +23,10 @@
  
 package org.northrop.leanne.utils;
 
-import org.eclipse.mylyn.wikitext.core.parser.builder.HtmlDocumentBuilder;
+import org.eclipse.mylyn.wikitext.core.parser.builder.*;
 import org.eclipse.mylyn.wikitext.core.parser.MarkupParser;
 import org.eclipse.mylyn.wikitext.textile.core.TextileLanguage;
+import org.northrop.leanne.publisher.textile.*;
 
 import java.util.*;
 import java.io.*;
@@ -51,13 +52,85 @@ public class Textile {
         builder.setEmitAsDocument(false);
         builder.setUseInlineStyles(false);
         builder.setSuppressBuiltInStyles(true);
-
-        MarkupParser parser = new MarkupParser(new TextileLanguage());
+        builder.setXhtmlStrict(true);
+        
+        MarkupParser parser = new MarkupParser(new BookTextileLanguage());
         parser.setBuilder(builder);
 
-        parser.parse(str);
+        parser.parse(str,false);
 
+		parser.setBuilder(null);
+		
         return sw.toString();
     }
+    
+    /**
+	 * parse the given markup content and produce the result as an DITA document.
+	 * 
+	 * @param markupContent
+	 *            the content to parse
+	 * 
+	 * @return the DITA document text.
+	 */
+	public static String toDita(String markupContent) {
+		StringWriter out = new StringWriter();
+
+        MarkupParser parser = new MarkupParser(new TextileLanguage());
+        DitaBookMapDocumentBuilder builder = new DitaBookMapDocumentBuilder(out);
+		parser.setBuilder(builder);
+		try { builder.close(); } catch(Exception ignore){}
+
+		parser.parse(markupContent,false);
+
+		parser.setBuilder(null);
+
+		return out.toString();
+	}
+	
+	/**
+	 * parse the given markup content and produce the result as an DocBook document.
+	 * 
+	 * @param markupContent
+	 *            the content to parse
+	 * 
+	 * @return the DocBook document text.
+	 */
+	public static String toDocBook(String markupContent) {
+		StringWriter out = new StringWriter();
+
+        MarkupParser parser = new MarkupParser(new TextileLanguage());
+        DocBookDocumentBuilder builder = new DocBookDocumentBuilder(out);
+		parser.setBuilder(builder);
+
+		parser.parse(markupContent,false);
+
+		parser.setBuilder(null);
+
+		return out.toString();
+	}
+	
+	/**
+	 * parse the given markup content and produce the result as an DocBook document.
+	 * 
+	 * @param markupContent
+	 *            the content to parse
+	 * 
+	 * @return the DocBook document text.
+	 */
+	public static String toPlainText(String markupContent) {
+		StringWriter out = new StringWriter();
+
+        TextileLanguage l = new PlainTextileLanguage();
+
+        MarkupParser parser = new MarkupParser(l);
+        PlainTextBuilder builder = new PlainTextBuilder(out);
+		parser.setBuilder(builder);
+        l.setBlocksOnly(false);
+		parser.parse(markupContent,false);
+
+		//parser.setBuilder(null);
+
+		return out.toString();
+	}	
 
 }
