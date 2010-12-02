@@ -14,7 +14,7 @@
                 xmlns:bfn="http://www.leanne.northrop.org/2010/BookFunctions"
                 exclude-result-prefixes="xs bfn"
                 version="2.0">
-    <xsl:output method="xml" indent="yes" encoding="utf8"/>
+    <xsl:output method="xml" encoding="utf8"/>
 
     <xsl:template match="/">
         <book>
@@ -90,40 +90,93 @@
             </xsl:for-each-group>
         </xsl:element>
     </xsl:template>
-
-    <xsl:template match="*">
-         <xsl:apply-templates/>
+    
+    <xsl:template match="div">
+        <footnotes>
+            <xsl:apply-templates mode="copy"/>
+        </footnotes>        
     </xsl:template>
 
+    <xsl:template match="*"><xsl:apply-templates/></xsl:template>
+    
     <xsl:template match="head">
          <xsl:apply-templates/>
     </xsl:template>
 
-    <xsl:template match="text()">
-    </xsl:template>
+    <xsl:template match="text()"></xsl:template>
 
-    <xsl:template match="p" mode="copy">
+    <xsl:template match="p[contains(@class, 'Verse')]" mode="copy">
+        <xsl:element name="stanza">
+            <xsl:attribute name="number"><xsl:analyze-string select="." regex="^\d+\."><xsl:matching-substring><xsl:value-of select="."/></xsl:matching-substring>
+</xsl:analyze-string></xsl:attribute>        
+            <xsl:for-each select="following-sibling::p[contains(@class, 'Verse')]"> 
+                <line><xsl:copy-of select="text() | *"/></line>
+            </xsl:for-each>
+        </xsl:element>        
+    </xsl:template>
+    
+    <xsl:template match="p[contains(@id, 'ftn')]" mode="copy">
         <xsl:choose>
             <xsl:when test="string-length(.) &gt; 0 ">
-                <paragraph>
+                <xsl:element name="footnote">
+                    <xsl:attribute name="id"><xsl:value-of select="replace(@id, '[^\d]', '')"/></xsl:attribute>
                     <xsl:copy-of select="text() | *"/>
-                </paragraph>
+                </xsl:element>
             </xsl:when>
-            <xsl:when test="img">
+            <xsl:when test="child::img">
+                <xsl:apply-templates select="img" mode="copy"/>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="p[not(contains(@id, 'ftn'))]" mode="copy">
+        <xsl:choose>
+            <xsl:when test="string-length(.) &gt; 0 ">
+                <paragraph><xsl:copy-of select="text() | *"/></paragraph>
+            </xsl:when>
+            <xsl:when test="child::img">
                 <xsl:apply-templates select="img" mode="copy"/>
             </xsl:when>
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template match="img" mode="copy">
-            <xsl:element name="image">
-                <xsl:attribute name="width" select="@width"/>
-                <xsl:attribute name="src" select="replace(@src, '/', '.')"/>                
-                <xsl:attribute name="align" select="@align"/>                                
-            </xsl:element>
+    <xsl:template match="img|image" mode="copy">
+        <xsl:element name="image">
+            <xsl:attribute name="width" select="@width"/>
+            <xsl:attribute name="src" select="replace(@src, '/', '.')"/>                
+            <xsl:attribute name="align" select="@align"/>                                
+        </xsl:element>
     </xsl:template>
 
-    <xsl:template match="ul|ol" mode="copy">
+    <xsl:template match="ol[contains(@class, 'stanza')]" mode="copy">
+        <xsl:variable name="number">
+            <xsl:analyze-string select="li[1]" regex="^(\d+)\.">
+                <xsl:matching-substring>
+                    <xsl:value-of select="regex-group(1)"/>
+                </xsl:matching-substring>
+            </xsl:analyze-string> 
+        </xsl:variable>
+              
+        <xsl:variable name="linenumberfrequency"><xsl:value-of select="count(child::li)"/></xsl:variable>
+        <xsl:element name="stanza">
+            <xsl:attribute name="index" select="'0'"/>
+            <xsl:attribute name="flagtext" select="$number"/>                
+            <xsl:attribute name="linenumberfrequency" select="'0'"/>                                
+            <xsl:attribute name="font" select="'poeticaRed'"/>                                                
+            <xsl:for-each select="child::li">
+                <xsl:choose>
+                    <xsl:when test="position() = 1">
+                        <xsl:apply-templates select="." mode="stanzaline1"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:apply-templates select="." mode="stanzaline"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:for-each>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="ul|ol[not(contains(@class, 'stanza'))]" mode="copy">
         <xsl:if test="string-length(.) &gt; 0 ">
             <xsl:element name="list">
                 <xsl:attribute name="kind" select="local-name()"/>
@@ -132,7 +185,13 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="li|table" mode="copy">
+    <xsl:template match="li" mode="copy"> 
+        <xsl:element name="item">
+            <xsl:apply-templates select="text() | *" mode="copy"/>
+        </xsl:element>                    
+    </xsl:template>
+        
+    <xsl:template match="table" mode="copy">
         <xsl:copy-of select="."/>
     </xsl:template>
 
@@ -140,7 +199,24 @@
         <xsl:copy-of select="*"/>
     </xsl:template>
 
-    <xsl:template match="text()" mode="copy">
+    <xsl:template match="text()|essential" mode="copy"><xsl:copy-of select="."/></xsl:template>
+    
+    <xsl:template match="*" mode="stanzaline1"><xsl:copy-of select="."/></xsl:template>
+    <xsl:template match="li" mode="stanzaline1"><line indent="0" line-length="yes"><xsl:apply-templates select="text() | *" mode="stanzaline1"/></line></xsl:template>    
+    <xsl:template match="text()" mode="stanzaline1">
+        <xsl:analyze-string select="." regex="^\s*\d+\.\s+">
+            <xsl:non-matching-substring><xsl:copy-of select="."/></xsl:non-matching-substring>
+        </xsl:analyze-string>        
+    </xsl:template>
+    
+    <xsl:template match="*" mode="stanzaline"><xsl:copy-of select="."/></xsl:template>
+    <xsl:template match="li" mode="stanzaline"><line indent="0"><xsl:apply-templates select="text() | *" mode="stanzaline"/></line></xsl:template>    
+    <xsl:template match="text()" mode="stanzaline"><xsl:copy-of select="."/></xsl:template>
+        
+    <xsl:template match="i|b|u|sup|sub" mode="copy">
+        <xsl:if test="string-length(.) &gt; 0 ">
+            <xsl:copy-of select="."/>
+        </xsl:if>        
     </xsl:template>
 
     <xsl:function name="bfn:getTitle" as="xs:string">

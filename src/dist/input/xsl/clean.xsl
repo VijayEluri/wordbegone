@@ -12,10 +12,7 @@
     <xsl:output method="xml" encoding="utf8"/>
 
     <xsl:template match="/">
-        <xsl:variable name="content">
-            <xsl:apply-templates select="*"/>
-        </xsl:variable>
-        <xsl:copy-of select="$content"/>
+        <xsl:apply-templates select="*"/>
     </xsl:template>
 
     <xsl:template match="span">
@@ -31,7 +28,7 @@
         </xsl:choose>
     </xsl:template>
 
-    <xsl:template match="*">
+    <xsl:template match="*">     
         <xsl:choose>
             <xsl:when test="local-name() = 'img' or child::* or string-length(normalize-space(.)) &gt; 0">
                 <xsl:copy>
@@ -53,14 +50,14 @@
 
     <!-- default rule: ignore any of following -->
     <xsl:template match="meta|style|link" />
-
+    
     <!-- override rule: copy any text node beneath description -->
     <xsl:template match="text()">
         <xsl:choose>
             <xsl:when test=". = '&nbsp;'">
             </xsl:when>
             <xsl:otherwise>
-                <xsl:copy-of select="."/>
+                <xsl:copy-of select="replace(.,'&#xA;',' ')"/>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>

@@ -55,7 +55,7 @@ ant.echo "${logMsgPrefix} Start"
 ant.echo "${logMsgPrefix} Copying HTML image files to ${dir}/input/img"
 ['png','jpg','jpeg'].each { ext ->
     ant.copy(todir:"${dir}/input/img") {
-        mapper(type:"package", from: "*.${ext}", to:"html_*.${ext}")
+        mapper(type:"package", from: "*.${ext}", to:"*.${ext}")
         fileset(dir:"${dir}/input/html") {
             include(name:"**/*.${ext}")
         }
@@ -73,9 +73,9 @@ new File("${dir}/input/xml/").listFiles(
     ant.echo "${logMsgPrefix} Processing ${inFile.name}"
 
     def result = inFile.getText("utf8")
-    ['latex-chapter'].each {
+    ['latex2'].each {
         result = transform("${dir}/input/xsl/${it}.xsl", result)
-        if (isdebug && it != 'latex-chapter') {
+        if (isdebug && it != 'latex2') {
             outFile = new File("${outDir}/${inFile.name.replaceAll('.htm(l)*','')}_${it}.html")
             outFile.withWriter('utf8'){ w->
                 w << result
@@ -132,7 +132,7 @@ ant.echo "${logMsgPrefix} Copying latex resource files"
 
 ant.echo "${logMsgPrefix} Tidying up"
 ant.delete {
-    fileset(dir:"${dir}/input/img",includes:"html_*.*")
+    fileset(dir:"${dir}/input/img",includes:"module*.*")
 }
 
 ant.echo "${logMsgPrefix} Complete"

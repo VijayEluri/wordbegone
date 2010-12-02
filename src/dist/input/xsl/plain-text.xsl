@@ -59,7 +59,7 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
 <xsl:text>&#xA;</xsl:text>         
 <xsl:text>&#xA;</xsl:text>        
 <xsl:value-of select="ancestor::chapter/@index"/>.<xsl:value-of select="parent::section/@index"/>.<xsl:value-of select="position()"/><xsl:text>&nbsp;</xsl:text><xsl:value-of select="@title"/>
-<xsl:text>&#xA;</xsl:text>        
+<xsl:text>&#xA;</xsl:text>            
         <xsl:apply-templates select="child::*"/>
     </xsl:template>
 
@@ -67,32 +67,16 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
 <xsl:text>&#xA;</xsl:text>         
 <xsl:text>&#xA;</xsl:text>        
 <xsl:value-of select="@title"/>
-<xsl:text>&#xA;</xsl:text>        
+<xsl:text>&#xA;</xsl:text> 
         <xsl:apply-templates select="child::*"/>
     </xsl:template>
 
-    <xsl:template match="paragraph[position() eq 1 and parent::section[position() eq 1 and @index eq '1']]">
-<xsl:text>  </xsl:text><xsl:value-of select="t:toPlainText(.)"/>        
-    </xsl:template>
-
-    <xsl:template match="paragraph[position() eq 1 and parent::section[position() eq 1 and @index gt '1']]">
-<xsl:value-of select="t:toPlainText(.)"/>
-    </xsl:template>
-
-    <xsl:template match="paragraph[position() eq 1 and parent::subsection[position() eq 1]]">
-<xsl:value-of select="t:toPlainText(.)"/>
-    </xsl:template>
-
-    <xsl:template match="paragraph[position() eq 1 and parent::subsubsection[position() eq 1]]">
-<xsl:value-of select="t:toPlainText(.)"/>
-    </xsl:template>
-
-    <xsl:template match="paragraph[position() gt 1 or (position() eq 1 and (parent::appendix or parent::chapter))]">
-<xsl:value-of select="t:toPlainText(.)"/>
+    <xsl:template match="paragraph">
+<xsl:apply-templates select="text()|*"/>
     </xsl:template>
 
     <xsl:template match="subparagraph">
-<xsl:value-of select="t:toPlainText(.)"/>
+<xsl:apply-templates select="*"/>
     </xsl:template>
 
     <xsl:template match="image">
@@ -116,29 +100,31 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
     </xsl:template>
 
     <xsl:template match="paragraph" mode="index">
-<xsl:value-of select="t:toPlainText(.)"/>
+<xsl:apply-templates select="text()|*"/>
     </xsl:template>
 
     <xsl:template match="paragraph" mode="footnote">
-<xsl:value-of select="t:toPlainText(.)"/>
+<xsl:value-of select="text()|*"/>
     </xsl:template>
     
     <xsl:template match="list">
+<xsl:text>&#xA;</xsl:text>            
         <xsl:choose>
             <xsl:when test="@kind eq 'label'">
-                <xsl:apply-templates select="child::*"/>
+                <xsl:apply-templates select="*"/>
             </xsl:when>
             <xsl:when test="@kind eq 'ul'">
-                <xsl:apply-templates select="child::*"/>
+                <xsl:apply-templates select="*"/>
             </xsl:when>            
             <xsl:otherwise>
-                <xsl:apply-templates select="child::*"/>
+                <xsl:apply-templates select="*"/>
             </xsl:otherwise>
         </xsl:choose>
+<xsl:text>&#xA;</xsl:text>            
     </xsl:template>
 
     <xsl:template match="item">
-<xsl:value-of select="t:toPlainText(.)"/>
+<xsl:apply-templates select="*"/>
     </xsl:template>
 
     <xsl:template match="verse">
@@ -147,8 +133,8 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
     </xsl:template>
 
     <xsl:template match="stanza">
-        <xsl:apply-templates select="." mode="verse"/>
-<xsl:if test="@author"><xsl:value-of select="@author"/></xsl:if>
+<xsl:apply-templates select="." mode="verse"/>
+        <xsl:if test="@author"><xsl:value-of select="@author"/></xsl:if>
     </xsl:template>
 
     <xsl:template match="stanza" mode="verse">
@@ -161,7 +147,7 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
     <xsl:value-of select="$initial"/><xsl:value-of select="$remaining"/>
                 </xsl:when>
                 <xsl:otherwise>
-    <xsl:value-of select="t:toPlainText(.)"/>
+    <xsl:value-of select="."/>
                 </xsl:otherwise>
             </xsl:choose>
 
@@ -174,4 +160,10 @@ Section <xsl:value-of select="parent::chapter/@index"/>.<xsl:value-of select="@i
         </xsl:for-each>
     </xsl:template>
 
+    <xsl:template match="a"></xsl:template>
+
+    <xsl:template match="*"><xsl:apply-templates/></xsl:template>
+
+    <xsl:template match="text()"><xsl:value-of select="."/></xsl:template>
+    
 </xsl:stylesheet>

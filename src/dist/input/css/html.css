@@ -346,3 +346,6 @@ white-space: nowrap;
 .book .chapter {
 margin-top: 4em;
 }
+.essential {
+color: blue;
+}

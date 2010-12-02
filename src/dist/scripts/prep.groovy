@@ -92,10 +92,10 @@ new File("${dir}/html/").listFiles(
     def outFile = new File("${dir}/newxml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
 
     def result = writer.toString()
-    ['clean', 'textile','html2book'].each {
+    ['clean', 'bookmarkup','html2book','removeempty'].each {
         result = transform("${dir}/xsl/${it}.xsl", result)
-        if (isdebug && it != 'html2book') {
-            outFile = new File("${outDir}/debug/${inFile.name.replaceAll('.htm(l)*','')}_${it}.html")
+        if (isdebug && it != 'removeempty') {
+            outFile = new File("${outDir}/debug/${inFile.name.replaceAll('.htm(l)*','')}_${it}.xml")
             outFile.withWriter('utf8'){ w->
                 w << result
             }        
@@ -104,6 +104,6 @@ new File("${dir}/html/").listFiles(
 
     outFile = new File("${dir}/xml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
     outFile.withWriter('utf8'){ w->
-      w << result 
+      w << result
     }
 }
