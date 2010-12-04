@@ -35,11 +35,14 @@ import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
 
 def logMsgPrefix = "Latex Formatting: "
-def dir = "${home}"
+def homeDir = home
+def resourcesDir = "${home}/resources"  
+def outDir = "${outputDir}/latex"
+
 def ant = new AntBuilder()
-ant.mkdir(dir:"${home}/output")
+ant.mkdir(dir:outputDir)
 if (isdebug) {
-    ant.mkdir(dir:"${home}/output/debug")    
+    ant.mkdir(dir:"${outputDir}/debug")    
 }
 
 // Helper Functions
@@ -52,11 +55,11 @@ def transform(xsltFile,input) {
 }
 
 ant.echo "${logMsgPrefix} Start"
-ant.echo "${logMsgPrefix} Copying HTML image files to ${dir}/input/img"
+ant.echo "${logMsgPrefix} Copying HTML image files to ${resourcesDir}/img"
 ['png','jpg','jpeg'].each { ext ->
-    ant.copy(todir:"${dir}/input/img") {
+    ant.copy(todir:"${resourcesDir}/img") {
         mapper(type:"package", from: "*.${ext}", to:"*.${ext}")
-        fileset(dir:"${dir}/input/html") {
+        fileset(dir:"${inputDir}/html") {
             include(name:"**/*.${ext}")
         }
     }       
@@ -64,17 +67,16 @@ ant.echo "${logMsgPrefix} Copying HTML image files to ${dir}/input/img"
 
 def chaps = []
 def append = []
-def outDir = "${dir}/output/latex"
 ant.mkdir(dir:outDir)
 ant.echo "${logMsgPrefix} Generating latex files to ${outDir}..."
-new File("${dir}/input/xml/").listFiles(
+new File("${resourcesDir}/xml/").listFiles(
     {d, file-> file ==~ /.*?\.xml/ && file != 'book.xml'} as FilenameFilter
   ).toList().each { inFile ->
     ant.echo "${logMsgPrefix} Processing ${inFile.name}"
 
     def result = inFile.getText("utf8")
     ['latex2'].each {
-        result = transform("${dir}/input/xsl/${it}.xsl", result)
+        result = transform("${resourcesDir}/xsl/${it}.xsl", result)
         if (isdebug && it != 'latex2') {
             outFile = new File("${outDir}/${inFile.name.replaceAll('.htm(l)*','')}_${it}.html")
             outFile.withWriter('utf8'){ w->
@@ -111,28 +113,34 @@ def bookXMLStr = xmlWriter.toString()
 
 if (isdebug) {
     ant.echo "${logMsgPrefix} Generating debug files to ${dir}/output/debug/book.xml"
-    new File("${dir}/output/debug/book.xml").withWriter('utf8'){ w->
+    new File("${outputDir}/debug/book.xml").withWriter('utf8'){ w->
       w << bookXMLStr 
   }    
 }
 
-def result = transform("${dir}/input/xsl/latex.xsl", bookXMLStr)
+def result = transform("${resourcesDir}/xsl/latex.xsl", bookXMLStr)
 new File("${outDir}/book.tex").withWriter('utf8'){ w->
       w << result 
 }
 
 ant.echo "${logMsgPrefix} Copying latex resource files"
-['xtra','img','sty'].each { latexdir ->
+['img','style/latex/sty'].each { latexdir ->
     ant.copy(todir:"${outDir}") {
-        fileset(dir:"${dir}/input/${latexdir}") {
+        fileset(dir:"${resourcesDir}/${latexdir}") {
             include(name:"**/*")
         }
     }       
 }
 
+ant.copy(todir:"${outDir}") {
+    fileset(dir:"${inputDir}/latex") {
+        include(name:"**/*")
+    }
+} 
+
 ant.echo "${logMsgPrefix} Tidying up"
 ant.delete {
-    fileset(dir:"${dir}/input/img",includes:"module*.*")
+    fileset(dir:"${resourcesDir}/img",includes:"module*.*")
 }
 
 ant.echo "${logMsgPrefix} Complete"

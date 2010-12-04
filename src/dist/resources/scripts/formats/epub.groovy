@@ -37,8 +37,9 @@ import groovy.util.XmlNodePrinter
 import groovy.util.slurpersupport.NodeChild
 
 def logMsgPrefix = "EPUB Formatting: "
-def dir = "${home}"
-def outDir = "${dir}/output/epub"
+def homeDir = home
+def resourcesDir = "${home}/resources"  
+def outDir = "${outputDir}/epub"
 
 // Helper Functions
 def transform(xsltFile,input) {
@@ -63,7 +64,7 @@ def writeXMLFile(file,str,directive=true) {
 }
 
 def doMimetype() {
-    new File("${home}/output/epub/mimetype").withWriter('US-ASCII'){ w->
+    new File("${outputDir}/epub/mimetype").withWriter('US-ASCII'){ w->
         w << 'application/epub+zip'
     }    
 }
@@ -79,29 +80,29 @@ def doManifest() {
     }
 
     def ant = new AntBuilder()
-    ant.mkdir(dir:"${home}/output/epub/META-INF")
-    writeXMLFile(new File("${home}/output/epub/META-INF/container.xml"),xmlWriter.toString())
+    ant.mkdir(dir:"${outputDir}/epub/META-INF")
+    writeXMLFile(new File("${outputDir}/epub/META-INF/container.xml"),xmlWriter.toString())
 }
 
 def doCoverPage() {
     def title = "unknown"
-    def result = transform("${home}/input/xsl/epub_cover.xsl", "<book><title>${title}</title></book>")
-    writeXMLFile(new File("${home}/output/epub/OEBPS/cover.xhtml"),result,false)
+    def result = transform("${home}/resources/xsl/epub_cover.xsl", "<book><title>${title}</title></book>")
+    writeXMLFile(new File("${outputDir}/epub/OEBPS/cover.xhtml"),result,false)
 }
 
 def doPageTemplate() {
-    def result = transform("${home}/input/xsl/epub_template.xsl", "<book></book>")
-    writeXMLFile(new File("${home}/output/epub/OEBPS/page-template.xpgt"),result,false)   
+    def result = transform("${home}/resources/xsl/epub_template.xsl", "<book></book>")
+    writeXMLFile(new File("${outputDir}/epub/OEBPS/page-template.xpgt"),result,false)   
 }
 
 def doToc(xmlStr) {
-    def result = transform("${home}/input/xsl/epub_toc.xsl", xmlStr)
-    writeXMLFile(new File("${home}/output/epub/OEBPS/toc.ncx"),result,false)   
+    def result = transform("${home}/resources/xsl/epub_toc.xsl", xmlStr)
+    writeXMLFile(new File("${outputDir}/epub/OEBPS/toc.ncx"),result,false)   
 }
 
 def doContentOpf(xmlStr) {
-    def result = transform("${home}/input/xsl/epub_content_opf.xsl", xmlStr)
-    writeXMLFile(new File("${home}/output/epub/OEBPS/content.opf"),result,false)   
+    def result = transform("${home}/resources/xsl/epub_content_opf.xsl", xmlStr)
+    writeXMLFile(new File("${outputDir}/epub/OEBPS/content.opf"),result,false)   
 }
 
 def getContentsXML(files) {
@@ -121,7 +122,7 @@ def getContentsXML(files) {
             }
             images {
                 def count = 0
-                new File("${home}/output/epub/OEBPS/images").listFiles().toList().each { imageFile ->
+                new File("${outputDir}/epub/OEBPS/images").listFiles().toList().each { imageFile ->
                     image(id: count++, file: imageFile.name, mimetype:(imageFile.name.endsWith('png') ? 'image/png' : 'image/jpeg'))
                 }
             }            
@@ -133,17 +134,17 @@ def getContentsXML(files) {
 
 def ant = new AntBuilder()
 ant.echo "${logMsgPrefix} Start"
-ant.mkdir(dir:"${home}/output")
+ant.mkdir(dir:outputDir)
 ant.mkdir(dir:outDir)
 ant.mkdir(dir:"${outDir}/OEBPS")
 if (isdebug) {
-    ant.mkdir(dir:"${home}/output/debug")    
+    ant.mkdir(dir:"${outputDir}/debug")    
 }
-ant.echo "${logMsgPrefix} Copying HTML image files to ${dir}/input/img"
+ant.echo "${logMsgPrefix} Copying HTML image files to ${resourcesDir}/img"
 ['png','jpg','jpeg'].each { ext ->
-    ant.copy(todir:"${dir}/input/img") {
+    ant.copy(todir:"${resourcesDir}/img") {
         mapper(type:"package", from: "*.${ext}", to:"html_*.${ext}")
-        fileset(dir:"${dir}/input/html") {
+        fileset(dir:"${inputDir}/html") {
             include(name:"**/*.${ext}")
         }
     }       
@@ -151,7 +152,7 @@ ant.echo "${logMsgPrefix} Copying HTML image files to ${dir}/input/img"
 
 def files = [:]
 def index = 0
-new File("${dir}/input/xml/").listFiles(
+new File("${resourcesDir}/xml/").listFiles(
     {d, file-> file ==~ /.*?\.xml/ && file != 'book.xml'} as FilenameFilter
   ).toList().each { inFile ->
     ant.echo "${logMsgPrefix} Processing ${inFile.name}"
@@ -161,9 +162,9 @@ new File("${dir}/input/xml/").listFiles(
     files.put(inFile, "f_${index}.html")
         
     ['epub_html'].each {
-        result = transform("${dir}/input/xsl/${it}.xsl", result)
+        result = transform("${resourcesDir}/xsl/${it}.xsl", result)
         if (isdebug && it != 'epub_html') {
-            outFile = new File("${home}/output/debug/${inFile.name.replaceAll('.htm(l)*','')}_${it}.txt")
+            outFile = new File("${outputDir}/debug/${inFile.name.replaceAll('.htm(l)*','')}_${it}.txt")
             outFile.withWriter('utf8'){ w->
                 w << result
             }       
@@ -177,10 +178,10 @@ new File("${dir}/input/xml/").listFiles(
 }
 
 ant.echo "${logMsgPrefix} Copying EPUB resource files"
-['css':'css','img':'images'].each { epubdir,destdir ->
+['style/epub/css':'css','img':'images'].each { epubdir,destdir ->
     ant.mkdir(dir:"${outDir}/OEBPS/${destdir}")
     ant.copy(todir:"${outDir}/OEBPS/${destdir}") {
-        fileset(dir:"${dir}/input/${epubdir}") {
+        fileset(dir:"${resourcesDir}/${epubdir}") {
             include(name:"**/*")
         }
     }       
@@ -191,13 +192,12 @@ doManifest()
 doCoverPage()
 doPageTemplate()
 def contentXml = getContentsXML(files)
-println contentXml
 doToc(contentXml)
 doContentOpf(contentXml)
 
 ant.echo "${logMsgPrefix} Tidying up"
 ant.delete {
-    fileset(dir:"${dir}/input/img",includes:"html_*.*")
+    fileset(dir:"${resourcesDir}/img",includes:"html_*.*")
     fileset(dir:"${outDir}",includes:"**/*.epub")
 }
 

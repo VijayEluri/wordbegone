@@ -8,7 +8,7 @@ defaultTasks 'assemble'
 
 sourceCompatibility = 1.6
 version = '1.0-SNAPSHOT'
-appName = 'Publisher Pipeline'
+appName = 'PublisherPipeline'
 bDate = new Date()
 buildDate = bDate.format("yyyy-MM-dd HH:mm:ss")
 

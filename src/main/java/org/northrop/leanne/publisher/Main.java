@@ -102,6 +102,8 @@ public class Main {
                 Option[] options = line.getOptions();
                 Binding binding = new Binding();
                 binding.setVariable("home", System.getProperty("pub.home"));
+                binding.setVariable("inputDir", System.getProperty("pub.home") + "/input");                
+                binding.setVariable("outputDir", System.getProperty("pub.home") + "/output");                                
                 binding.setVariable("appName", System.getProperty("program.name"));                
                 binding.setVariable("isdebug", false);                
                                 
@@ -110,7 +112,7 @@ public class Main {
                     binding.setVariable("is" + opt.getOpt(), true);
                 }
 
-                String[] roots = new String[] { System.getProperty("pub.home")+"/scripts",System.getProperty("pub.home")+"/scripts/formats"};
+                String[] roots = new String[] { System.getProperty("pub.home")+"/resources/scripts",System.getProperty("pub.home")+"/resources/scripts/formats"};
                 ClassLoader parent = Main.class.getClassLoader();
                 GroovyScriptEngine gse = new GroovyScriptEngine(roots,parent);
                 
@@ -143,7 +145,7 @@ public class Main {
     protected static List<String> getFormats() {
         Binding binding = new Binding();
         binding.setVariable("home", System.getProperty("pub.home"));
-        binding.setVariable("formatsScriptDir", System.getProperty("pub.home")+"/scripts/formats");        
+        binding.setVariable("formatsScriptDir", System.getProperty("pub.home")+"/resources/scripts/formats");        
         
         GroovyShell shell = new GroovyShell(binding);        
         List<String> filenames = (List<String>)shell.evaluate("new File(formatsScriptDir).listFiles([accept:{d,f-> f ==~ /.*?\\.groovy/ }] as FilenameFilter).toList()*.name.collect{it.capitalize()[0..-8]}");

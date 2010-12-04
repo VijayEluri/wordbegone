@@ -38,7 +38,8 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 import org.apache.tools.ant.*
 
-def dir = "${home}/input"
+def homeDir = home
+def resourcesDir = "${home}/resources"                              
 
 // Helper Functions
 def transform(xsltFile,input) {
@@ -60,12 +61,12 @@ def parser() {
 }
 
 def ant = new AntBuilder()
-ant.mkdir(dir:"${home}/output")
+ant.mkdir(dir:outputDir)
 if (isdebug) {
-    ant.mkdir(dir:"${home}/output/debug")    
+    ant.mkdir(dir:"${outputDir}/debug")    
 }
 
-new File("${dir}/html/").listFiles(
+new File("${inputDir}/html/").listFiles(
     {d, file-> file ==~ /.*?\.htm/ } as FilenameFilter
   ).toList().each { inFile ->
     ant.echo "Processing ${inFile.name}"
@@ -73,7 +74,7 @@ new File("${dir}/html/").listFiles(
     def text=inFile.getText("utf8")
 
     // Get Index Words
-    def indexXML=new File("${dir}/xtra/index-entries.xml").getText("utf8")
+    def indexXML=new File("${inputDir}/index-entries.xml").getText("utf8")
     def xml=new XmlSlurper().parseText(indexXML)          
     def list = xml.depthFirst().grep{ it.name() == 'indexentry' }.collect{ it.text() }.unique()
     def indexPattern = '\\b(' + list.join('|') + ')\\b'
@@ -88,21 +89,20 @@ new File("${dir}/html/").listFiles(
 
     // Process HTML into Textile Marked up Content
     def prettyHtml = new XmlParser().parseText(writer.toString())
-    def outDir = "${home}/output"
-    def outFile = new File("${dir}/newxml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
+    def outFile = new File("${resourcesDir}/xml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
 
     def result = writer.toString()
     ['clean', 'bookmarkup','html2book','removeempty'].each {
-        result = transform("${dir}/xsl/${it}.xsl", result)
+        result = transform("${resourcesDir}/xsl/${it}.xsl", result)
         if (isdebug && it != 'removeempty') {
-            outFile = new File("${outDir}/debug/${inFile.name.replaceAll('.htm(l)*','')}_${it}.xml")
+            outFile = new File("${outputDir}/debug/${inFile.name.replaceAll('.htm(l)*','')}_${it}.xml")
             outFile.withWriter('utf8'){ w->
                 w << result
             }        
         }
     }
 
-    outFile = new File("${dir}/xml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
+    outFile = new File("${resourcesDir}/xml/${inFile.name.replaceAll('.htm(l)*','')}.xml")
     outFile.withWriter('utf8'){ w->
       w << result
     }

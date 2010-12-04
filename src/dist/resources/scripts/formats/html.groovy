@@ -33,7 +33,10 @@ import javax.xml.transform.stream.StreamSource
 import org.apache.tools.ant.*
 
 def logMsgPrefix = "HTML Formatting: "
-def dir = "${home}"
+def homeDir = home
+def resourcesDir = "${home}/resources"  
+def outDir = "${outputDir}/html"
+
 
 // Helper Functions
 def transform(xsltFile,input) {
@@ -46,21 +49,20 @@ def transform(xsltFile,input) {
 
 def ant = new AntBuilder()
 ant.echo "${logMsgPrefix} Start"
-ant.mkdir(dir:"${home}/output")
-def outDir = "${dir}/output/html"
+ant.mkdir(dir:outputDir)
 ant.mkdir(dir:outDir)
 if (isdebug) {
-    ant.mkdir(dir:"${home}/output/debug")    
+    ant.mkdir(dir:"${outputDir}/debug")    
 }
 
-new File("${dir}/input/xml/").listFiles(
+new File("${resourcesDir}/xml/").listFiles(
     {d, file-> file ==~ /.*?\.xml/ && file != 'book.xml'} as FilenameFilter
   ).toList().each { inFile ->
     ant.echo "${logMsgPrefix} Processing ${inFile.name}"
 
     def result = inFile.getText("utf8")
     ['html'].each {
-        result = transform("${dir}/input/xsl/${it}.xsl", result)
+        result = transform("${resourcesDir}/xsl/${it}.xsl", result)
         if (isdebug && it != 'html') {
             outFile = new File("${outDir}/${inFile.name.replaceAll('.htm(l)*','')}_${it}.txt")
             outFile.withWriter('utf8'){ w->
@@ -74,21 +76,21 @@ new File("${dir}/input/xml/").listFiles(
       w << result 
     }
 }
-ant.echo "${logMsgPrefix} Copying HTML image files to ${dir}/input/img"
+ant.echo "${logMsgPrefix} Copying HTML image files to ${resourcesDir}/img"
 ['png','jpg','jpeg'].each { ext ->
-    ant.copy(todir:"${dir}/input/img") {
+    ant.copy(todir:"${resourcesDir}/img") {
         mapper(type:"package", from: "*.${ext}", to:"html_*.${ext}")
-        fileset(dir:"${dir}/input/html") {
+        fileset(dir:"${inputDir}/html") {
             include(name:"**/*.${ext}")
         }
     }       
 }
 
 ant.echo "${logMsgPrefix} Copying HTML resource files"
-['css':'css','img':'images'].each { epubdir,destdir ->
+['style/html/css':'css','img':'images'].each { epubdir,destdir ->
     ant.mkdir(dir:"${outDir}/${destdir}")
     ant.copy(todir:"${outDir}/${destdir}") {
-        fileset(dir:"${dir}/input/${epubdir}") {
+        fileset(dir:"${resourcesDir}/${epubdir}") {
             include(name:"**/*")
         }
     }       
@@ -96,6 +98,5 @@ ant.echo "${logMsgPrefix} Copying HTML resource files"
 
 ant.echo "${logMsgPrefix} Tidying up"
 ant.delete {
-    fileset(dir:"${dir}/input/img",includes:"html_*.*")
-    fileset(dir:"${outDir}",includes:"**/*.epub")
+    fileset(dir:"${resourcesDir}/img",includes:"html_*.*")
 }

@@ -32,8 +32,10 @@ import javax.xml.transform.stream.StreamResult
 import javax.xml.transform.stream.StreamSource
 import org.apache.tools.ant.*
 
-def logMsgPrefix = "Plain Text Formatting: "
-def dir = "${home}"
+def logMsgPrefix = "Textile Formatting: "
+def homeDir = home
+def resourcesDir = "${home}/resources"  
+def outDir = "${outputDir}/textile"
 
 // Helper Functions
 def transform(xsltFile,input) {
@@ -46,21 +48,20 @@ def transform(xsltFile,input) {
 
 def ant = new AntBuilder()
 ant.echo "${logMsgPrefix} Start"
-ant.mkdir(dir:"${home}/output")
-def outDir = "${dir}/output/textile"
+ant.mkdir(dir:outputDir)
 ant.mkdir(dir:outDir)
 if (isdebug) {
-    ant.mkdir(dir:"${home}/output/debug")    
+    ant.mkdir(dir:"${outputDir}/debug")    
 }
 
-new File("${dir}/input/xml/").listFiles(
+new File("${resourcesDir}/xml/").listFiles(
     {d, file-> file ==~ /.*?\.xml/ && file != 'book.xml'} as FilenameFilter
   ).toList().each { inFile ->
     ant.echo "${logMsgPrefix} Processing ${inFile.name}"
 
     def result = inFile.getText("utf8")
     ['textile'].each {
-        result = transform("${dir}/input/xsl/${it}.xsl", result)
+        result = transform("${resourcesDir}/xsl/${it}.xsl", result)
         if (isdebug && it != 'textile') {
             outFile = new File("${outDir}/${inFile.name.replaceAll('.htm(l)*','')}_${it}.txt")
             outFile.withWriter('utf8'){ w->
