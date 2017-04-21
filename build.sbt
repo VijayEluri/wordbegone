@@ -18,8 +18,6 @@ lazy val root = (project in file(".")).
     mappings in Universal <++= sourceDirectory map (src => directory(src / "dist" / "resources")),
     mappings in (Compile, packageDoc) := Seq(),
     javaOptions in Universal ++= Seq(
-      s"-Xdock:name=Publisher",
-      "-Xdock:icon=app.icns",
       s"-Dprogram.name=Publisher",
       "-Dpub.home=../"
     )
