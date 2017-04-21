@@ -9,7 +9,7 @@ darwin=false
 case "`uname`" in
   CYGWIN* )
     cygwin=true
-    ;; 
+    ;;
   Darwin* )
     darwin=true
     ;;
@@ -20,7 +20,7 @@ esac
 
 # Attempt to set JAVA_HOME if it's not already set.
 if [ -z "$JAVA_HOME" ] ; then
-    if $darwin ; then 
+    if $darwin ; then
         [ -z "$JAVA_HOME" -a -d "/Library/Java/Home" ] && export JAVA_HOME="/Library/Java/Home"
         [ -z "$JAVA_HOME" -a -d "/System/Library/Frameworks/JavaVM.framework/Home" ] && export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Home"
     else
@@ -96,7 +96,7 @@ if [ -z "$JAVA_HOME" ] ; then
     warn "JAVA_HOME environment variable is not set"
 fi
 
-STARTER_CLASSPATH=$PUBLISHER_HOME/libs
+STARTER_CLASSPATH=$PUBLISHER_HOME
 STARTER_MAIN_CLASS="$STARTER_CLASSPATH/@jarName@"
 
 # For Darwin, add GROOVY_APP_NAME to the JAVA_OPTS as -Xdock:name

@@ -1,29 +1,28 @@
 import org.apache.tools.ant.filters.*
 import java.text.*
 
-usePlugin 'groovy'
-usePlugin(BasePlugin)
+apply plugin: 'java'
+apply plugin: 'distribution'
 
-defaultTasks 'assemble'
-
-sourceCompatibility = 1.6
-version = '1.0-SNAPSHOT'
-appName = 'PublisherPipeline'
-bDate = new Date()
-buildDate = bDate.format("yyyy-MM-dd HH:mm:ss")
-
-configurations {
-    runtime
+ext {
+  appName = "PublisherPipeline"
+  author = "Leanne Northrop"
+  groovyVersion = "2.4.10"
 }
 
-manifest.mainAttributes (
-    'Implementation-Title': appName, 
-    'Implementation-Version': version,
-    "Main-Class":"org.northrop.leanne.publisher.Main",
-    "Extension-Name": appName,
-    "Implementation-Vendor-Id" : 'Leanne Northrop', 
-    "Built-Date": buildDate 
-)
+sourceCompatibility = 1.8
+version = '1.0-SNAPSHOT'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': "${appName}",
+                   'Implementation-Version': version,
+                   "Main-Class":"org.northrop.leanne.publisher.Main",
+                   "Extension-Name": "${appName}",
+                   "Implementation-Vendor-Id" : "${author}",
+                   "Built-Date": new Date().format("yyyy-MM-dd HH:mm:ss")
+    }
+}
 
 repositories {
     flatDir name: 'localRepository', dirs: 'libs'
@@ -34,50 +33,48 @@ dependencies {
     compile group: 'net.sourceforge.saxon', name: 'saxon', version: '9.1.0.8'
     compile group: 'org.fusesource.wikitext', name: 'textile-core', version: '1.4'
     compile group: 'org.fusesource.wikitext', name: 'wikitext-core', version: '1.4'
-    compile group: 'commons-cli', name: 'commons-cli', version: '1.2'  
-    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '1.7.5'
-    compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.14'
-    compile group: 'org.apache.ant', name: 'ant', version: '1.8.1' 
-    compile group: 'commons-lang', name: 'commons-lang', version: '2.5'        
-    testCompile group: 'junit', name: 'junit', version: '4.7'    
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: "${groovyVersion}"
+    compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.22'
+    compile group: 'org.apache.ant', name: 'ant', version: '1.9.4'
+    compile group: 'commons-lang', name: 'commons-lang', version: '2.6'
+    testCompile group: 'junit', name: 'junit', version: '4.7'
 }
 
 uploadArchives {
     repositories {
-        flatDir(dirs: file('repos'))
+       flatDir {
+           dirs 'repos'
+       }
     }
 }
 
-jar.doFirst {
-   jar.manifest.mainAttributes('Class-Path': configurations.runtime.collect
-{ it.name }.join(' '))
+distributions {
+    main {
+        contents {
+          from jar
+          into('/'){
+            from 'src/dist'
+            filter(ReplaceTokens, tokens: [author: author,
+                                           gradleVersion: gradle.gradleVersion,
+                                           version: version,
+                                           appName: appName,
+                                           jarName: jar.archivePath.name,
+                                           buildDate: new Date().format("yyyy-MM-dd HH:mm:ss")])
+            exclude { details -> details.file.name.contains("bin")}
+          }
+          into('bin'){
+            from 'src/dist/bin'
+            filter(ReplaceTokens, tokens: [author: author,
+                                           gradleVersion: gradle.gradleVersion,
+                                           version: version,
+                                           appName: appName,
+                                           jarName: jar.archivePath.name,
+                                           buildDate: new Date().format("yyyy-MM-dd HH:mm:ss")])
+          }
+          into('lib') {
+            from configurations.runtime
+          }
+        }
+    }
 }
-
-task distLibs(dependsOn: 'jar', type: Copy) {
-    into file("$buildDir/distLibs")
-    from configurations.runtime
-    from jar.archivePath
- }
-
-task distFiles(dependsOn: 'distLibs', type: Copy) {
-    from 'src/dist'
-    into file("$buildDir/distFiles")
-    include '**/*'
-    include '*'    
-    filter(ReplaceTokens, tokens: [author: 'Leanne Northrop', 
-                                   gradleVersion: gradle.gradleVersion,
-                                   version: version,                                   
-                                   appName: appName,
-                                   jarName: jar.archivePath.name,
-                                   buildDate: DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.MEDIUM).format(bDate)])
-    //filter(ConcatFilter, prepend: file('src/include/header.txt'))
-}
-          
-task dist(dependsOn: 'distFiles', type: Zip) {
-    archiveName = 'WordPublisher${version}.zip'
-    fileSet dir: "$buildDir/distFiles"
-    zipFileSet(dir: "$buildDir/distLibs", prefix: "libs")
-}
-
-
-
