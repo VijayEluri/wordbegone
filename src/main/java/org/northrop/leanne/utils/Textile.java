@@ -20,7 +20,7 @@
  * BT plc, hereby disclaims all copyright interest in the program
  * “Publisher Pipeline System” written by Leanne Northrop.
  */
- 
+
 package org.northrop.leanne.utils;
 
 import org.eclipse.mylyn.wikitext.core.parser.builder.*;
@@ -43,7 +43,7 @@ public class Textile {
      * Converts a string containing Textile markup to HTML
      *
      * @param str String containing Textile markup.
-     * @returns HTML
+     * @return HTML
      */
     public static String toHtml(String str) {
         StringWriter sw = new StringWriter();
@@ -53,23 +53,23 @@ public class Textile {
         builder.setUseInlineStyles(false);
         builder.setSuppressBuiltInStyles(true);
         builder.setXhtmlStrict(true);
-        
+
         MarkupParser parser = new MarkupParser(new BookTextileLanguage());
         parser.setBuilder(builder);
 
         parser.parse(str,false);
 
 		parser.setBuilder(null);
-		
+
         return sw.toString();
     }
-    
+
     /**
 	 * parse the given markup content and produce the result as an DITA document.
-	 * 
+	 *
 	 * @param markupContent
 	 *            the content to parse
-	 * 
+	 *
 	 * @return the DITA document text.
 	 */
 	public static String toDita(String markupContent) {
@@ -86,13 +86,13 @@ public class Textile {
 
 		return out.toString();
 	}
-	
+
 	/**
 	 * parse the given markup content and produce the result as an DocBook document.
-	 * 
+	 *
 	 * @param markupContent
 	 *            the content to parse
-	 * 
+	 *
 	 * @return the DocBook document text.
 	 */
 	public static String toDocBook(String markupContent) {
@@ -108,13 +108,13 @@ public class Textile {
 
 		return out.toString();
 	}
-	
+
 	/**
 	 * parse the given markup content and produce the result as an DocBook document.
-	 * 
+	 *
 	 * @param markupContent
 	 *            the content to parse
-	 * 
+	 *
 	 * @return the DocBook document text.
 	 */
 	public static String toPlainText(String markupContent) {
@@ -131,6 +131,6 @@ public class Textile {
 		//parser.setBuilder(null);
 
 		return out.toString();
-	}	
+	}
 
 }
